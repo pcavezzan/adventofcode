@@ -10,17 +10,15 @@ fn main() {
     // File hosts.txt must exist in the current path
     if let Ok(lines) = read_lines("./input.txt") {
         // Consumes the iterator, returns an (Optional) String
-        let mut sum_game_id = 0;
+        let mut sum = 0;
         for line in lines {
             if let Ok(ip) = line {
                 let game = Game::parse(ip.as_str());
-                let game_id = game.id;
-                if game.is_possible() {
-                    sum_game_id += game_id;
-                }
+                let power = game.power;
+                sum += power;
             }
         }
-        println!("What is the sum of the IDs of those games? {}", sum_game_id);
+        println!("What is the sum of the IDs of those games? {}", sum);
     } else {}
 }
 
