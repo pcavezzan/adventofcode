@@ -16,7 +16,6 @@ fn main() {
                 let game = Game::parse(ip.as_str());
                 let game_id = game.id;
                 if game.is_possible() {
-                    println!("{game_id}");
                     sum_game_id += game_id;
                 }
             }
