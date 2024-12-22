@@ -11,9 +11,9 @@ struct Point { x: i32, y: i32 }
 #[derive(Debug,Clone)]
 enum Position {
     Guard { face : char, point: Point },
-    Obstacle { point: Point },
-    Unvisited { point : Point},
-    Visited { point: Point },
+    Obstacle,
+    Unvisited,
+    Visited,
 }
 
 impl Display for Position {
@@ -39,8 +39,8 @@ impl Position {
     fn from_char_at(c: char, x: i32, y: i32) -> Self {
         match c {
             '^' | '>' | '<' | 'v' => Position::Guard { face : c, point: Point { x, y} },
-            '#' => Position::Obstacle { point: Point { x, y } },
-            _ => Unvisited { point: Point { x, y } },
+            '#' => Position::Obstacle,
+            _ => Unvisited,
         }
     }
 
@@ -130,15 +130,15 @@ impl PuzzleMap {
                 match position.move_forward() {
                     Position::Guard { face, point: Point { x, y } } => {
                         if x == self.positions[0].len() as i32 || y == self.positions[0].len() as i32 {
-                            self.positions[current_x as usize][current_y as usize] = Position::Visited {point: Point { x, y } };
+                            self.positions[current_x as usize][current_y as usize] = Position::Visited;
                             return Err(Exit)
                         }
 
                         let next_position = self.positions[x as usize][y as usize].clone();
-                        if let Position::Obstacle { point: _ } = next_position {
+                        if let Position::Obstacle = next_position {
                             return Err(Obstacle);
                         }
-                        self.positions[current_x as usize][current_y as usize] = Position::Visited {point: Point { x, y } };
+                        self.positions[current_x as usize][current_y as usize] = Position::Visited;
                         let guard = Position::Guard { face, point: Point { x, y } };
                         self.positions[x as usize][y as usize] = guard.clone();
                         Ok(guard)
