@@ -35,6 +35,14 @@ impl Point {
             },
         }
     }
+
+    pub fn anti_node(x: i32, y: i32) -> Self {
+        Self {
+            x,
+            y,
+            point_type: PointType::AntiNode,
+        }
+    }
 }
 
 #[derive(Debug, Eq, PartialEq)]

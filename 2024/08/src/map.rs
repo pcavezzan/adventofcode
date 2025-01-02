@@ -36,7 +36,10 @@ impl Map {
             line_number += 1;
         }
         Self { points: matrix }
+    }
 
+    fn find_anti_nodes(&self) -> Vec<Point> {
+        vec![]
     }
 }
 
@@ -71,5 +74,65 @@ mod tests {
                 ],
             ]
         });
+    }
+
+    #[test]
+    fn should_find_anti_node_in_puzzle() {
+        let map = Map{
+            points: vec![
+                vec![
+                    Point::regular(0, 0),
+                    Point::regular(1, 0),
+                    Point::regular(2, 0),
+                    Point::regular(3, 0),
+                ],
+                vec![
+                    Point::regular(0, 1),
+                    Point::regular(1, 1),
+                    Point::regular(2, 1),
+                    Point::regular(3, 1),
+                ],
+                vec![
+                    Point::regular(0, 2),
+                    Point::char_antenna(1, 2, 'a'),
+                    Point::regular(2, 2),
+                    Point::regular(3, 2),
+                ],
+                vec![
+                    Point::regular(0, 3),
+                    Point::regular(1, 3),
+                    Point::regular(2, 3),
+                    Point::regular(3, 3),
+                ],
+                vec![
+                    Point::regular(0, 4),
+                    Point::regular(1, 4),
+                    Point::char_antenna(2, 2, 'a'),
+                    Point::regular(3, 4),
+                ],
+                vec![
+                    Point::regular(0, 5),
+                    Point::regular(1, 5),
+                    Point::regular(2, 5),
+                    Point::regular(3, 5),
+                ],
+                vec![
+                    Point::regular(0, 6),
+                    Point::regular(1, 6),
+                    Point::regular(2, 6),
+                    Point::regular(3, 6),
+                ],
+            ]
+        };
+
+        let anti_node_points = map.find_anti_nodes();
+
+        assert_eq!(
+            anti_node_points,
+            vec![
+                Point::anti_node(0, 0),
+                Point::anti_node(3, 6)
+            ]
+        )
     }
 }
