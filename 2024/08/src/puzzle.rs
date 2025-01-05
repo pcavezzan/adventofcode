@@ -1,15 +1,15 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use crate::map::point::Point;
+use crate::puzzle::point::Point;
 
 mod point;
 
 #[derive(Debug, Eq, PartialEq)]
-pub struct Map {
+pub struct Puzzle {
     points: Vec<Vec<Point>>
 }
 
-impl Map {
+impl Puzzle {
     pub fn from_file(file_path: String) -> Self {
         let file = File::open(file_path).expect("file not found");
         let reader = BufReader::new(file);
@@ -38,7 +38,7 @@ impl Map {
         Self { points: matrix }
     }
 
-    fn find_anti_nodes(&self) -> Vec<Point> {
+    pub fn find_anti_nodes(&self) -> Vec<Point> {
         let mut anti_nodes = Vec::new();
         let mut antennas: Vec<&Point> = vec![];
 
@@ -84,16 +84,16 @@ impl Map {
 
 #[cfg(test)]
 mod tests {
-    use crate::map::Map;
-    use crate::map::point::Point;
+    use crate::puzzle::Puzzle;
+    use crate::puzzle::point::Point;
 
     #[test]
     fn create_new_map_from_file() {
         let file_path = String::from("./test_data/puzzle.txt");
 
-        let map = Map::from_file(file_path);
+        let map = Puzzle::from_file(file_path);
 
-        assert_eq!(map, Map{
+        assert_eq!(map, Puzzle {
             points: vec![
                 vec![
                     Point::regular(0, 0),
@@ -116,7 +116,7 @@ mod tests {
 
     #[test]
     fn should_find_anti_node_in_puzzle() {
-        let map = Map{
+        let map = Puzzle {
             points: vec![
                 vec![
                     Point::regular(0, 0),
