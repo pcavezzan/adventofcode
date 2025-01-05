@@ -62,11 +62,11 @@ impl Puzzle {
                     let first_anti_node = Point::anti_node(reference_antenna.x - dx, reference_antenna.y - dy);
                     let second_anti_node = Point::anti_node(antenna_to_compare_with.x + dx, antenna_to_compare_with.y + dy);
 
-                    if self.can_be_put_on_map(&first_anti_node) {
+                    if self.can_be_put_on_map(&first_anti_node) && !anti_nodes.contains(&first_anti_node) {
                         anti_nodes.push(first_anti_node);
                     }
 
-                    if self.can_be_put_on_map(&second_anti_node) {
+                    if self.can_be_put_on_map(&second_anti_node) && !anti_nodes.contains(&second_anti_node) {
                         anti_nodes.push(second_anti_node);
                     }
                 }
@@ -116,6 +116,15 @@ mod tests {
 
     #[test]
     fn should_find_anti_node_in_puzzle() {
+        /*
+        #...
+        ....
+        .a..
+        ....
+        ..a.
+        ....
+        ...#
+         */
         let map = Puzzle {
             points: vec![
                 vec![
@@ -172,5 +181,64 @@ mod tests {
                 Point::anti_node(3, 6)
             ]
         )
+    }
+
+    #[test]
+    fn should_find_anti_node_in_puzzle_return_distinct_anti_nodes() {
+        /*
+        #....
+        A.0..
+        A...0
+         */
+        let map = Puzzle {
+            points: vec![
+                vec![
+                    Point::regular(0, 0),
+                    Point::regular(1, 0),
+                    Point::regular(2, 0),
+                    Point::regular(3, 0),
+                    Point::regular(4, 0),
+                ],
+                vec![
+                    Point::char_antenna(0, 1, 'A'),
+                    Point::regular(1, 1),
+                    Point::int_antenna(2, 1, 0),
+                    Point::regular(3, 1),
+                    Point::regular(4, 1),
+                ],
+                vec![
+                    Point::char_antenna(0, 2, 'A'),
+                    Point::regular(1, 2),
+                    Point::regular(2, 2),
+                    Point::regular(3, 2),
+                    Point::int_antenna(4, 2, 0),
+                ],
+            ]
+        };
+
+        let anti_node_points = map.find_anti_nodes();
+
+        assert_eq!(anti_node_points, vec![Point::anti_node(0, 0), ]);
+    }
+
+
+    #[test]
+    fn should_find_anti_node_return_empty_vec_if_no_nodes_found() {
+        let map = Puzzle {
+            points: vec![
+                vec![
+                    Point::regular(0, 0),
+                    Point::regular(1, 0),
+                ],
+                vec![
+                    Point::regular(0, 1),
+                    Point::regular(1, 1),
+                ],
+            ]
+        };
+
+        let anti_node_points = map.find_anti_nodes();
+
+        assert_eq!(anti_node_points, vec![]);
     }
 }
