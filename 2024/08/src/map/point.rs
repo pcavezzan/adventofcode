@@ -2,8 +2,8 @@ use std::fmt::Debug;
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Point {
-    x: i32,
-    y: i32,
+    pub x: i32,
+    pub y: i32,
     point_type: PointType,
 }
 
@@ -43,10 +43,25 @@ impl Point {
             point_type: PointType::AntiNode,
         }
     }
+
+    pub fn is_antenna(&self) -> bool {
+        if let PointType::Antenna { frequency: _ } = self.point_type {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn frequency(&self) -> Option<&Frequency> {
+        match &self.point_type {
+            PointType::Antenna { frequency } => Some(frequency),
+            _ => None,
+        }
+    }
 }
 
 #[derive(Debug, Eq, PartialEq)]
-enum  Frequency {
+pub enum  Frequency {
     Str(char),
     Num(i32),
 }

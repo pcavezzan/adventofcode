@@ -39,7 +39,45 @@ impl Map {
     }
 
     fn find_anti_nodes(&self) -> Vec<Point> {
-        vec![]
+        let mut anti_nodes = Vec::new();
+        let mut antennas: Vec<&Point> = vec![];
+
+        for row in self.points.iter() {
+            for point in row.iter() {
+                if point.is_antenna() {
+                    antennas.push(point);
+                }
+            }
+        }
+
+        for i in 0..antennas.len() {
+            let reference_antenna = antennas[i];
+            for j in i + 1..antennas.len() {
+                let antenna_to_compare_with = antennas[j];
+
+                if reference_antenna.frequency() == antenna_to_compare_with.frequency() {
+                    let dx = antenna_to_compare_with.x - reference_antenna.x;
+                    let dy = antenna_to_compare_with.y - reference_antenna.y;
+
+                    let first_anti_node = Point::anti_node(reference_antenna.x - dx, reference_antenna.y - dy);
+                    let second_anti_node = Point::anti_node(antenna_to_compare_with.x + dx, antenna_to_compare_with.y + dy);
+
+                    if self.can_be_put_on_map(&first_anti_node) {
+                        anti_nodes.push(first_anti_node);
+                    }
+
+                    if self.can_be_put_on_map(&second_anti_node) {
+                        anti_nodes.push(second_anti_node);
+                    }
+                }
+            }
+        }
+
+        anti_nodes
+    }
+
+    fn can_be_put_on_map(&self, point: &Point) -> bool {
+        point.x >= 0 && point.y >= 0 && (point.y as usize) < self.points.len() && (point.x as usize) < self.points[0].len()
     }
 }
 
@@ -107,7 +145,7 @@ mod tests {
                 vec![
                     Point::regular(0, 4),
                     Point::regular(1, 4),
-                    Point::char_antenna(2, 2, 'a'),
+                    Point::char_antenna(2, 4, 'a'),
                     Point::regular(3, 4),
                 ],
                 vec![
