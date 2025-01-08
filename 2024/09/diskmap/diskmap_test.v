@@ -35,3 +35,27 @@ fn test_create_diskmap_from_input() {
 		]
 	}
 }
+
+fn test_disk_map_represents_individual_blocks() {
+	disk_map := from_str_input('12345')!
+
+	individual_blocks := disk_map.to_individual_blocks()
+
+	assert individual_blocks == [
+		IndividualBlock{0},
+		IndividualBlock{-1},
+		IndividualBlock{-1},
+		IndividualBlock{1},
+		IndividualBlock{1},
+		IndividualBlock{1},
+		IndividualBlock{-1},
+		IndividualBlock{-1},
+		IndividualBlock{-1},
+		IndividualBlock{-1},
+		IndividualBlock{2},
+		IndividualBlock{2},
+		IndividualBlock{2},
+		IndividualBlock{2},
+		IndividualBlock{2},
+	]
+}

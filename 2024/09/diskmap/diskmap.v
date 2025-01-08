@@ -2,6 +2,10 @@ module diskmap
 
 import strconv
 
+struct IndividualBlock {
+	value int
+}
+
 enum BlockType {
 	file
 	free_space
@@ -32,6 +36,18 @@ fn new_free_space_block(block int) Block {
 
 pub struct DiskMap {
 	blocs []Block
+}
+
+fn (dm DiskMap) to_individual_blocks() []IndividualBlock {
+	mut individual_blocks := []IndividualBlock{}
+	for block in dm.blocs {
+		for i := 0; i < block.number_of_blocs; i++ {
+			individual_blocks << IndividualBlock{
+				value: block.id
+			}
+		}
+	}
+	return individual_blocks
 }
 
 pub fn from_str_input(input string) !DiskMap {
