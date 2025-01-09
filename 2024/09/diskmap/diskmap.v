@@ -2,11 +2,18 @@ module diskmap
 
 import strconv
 
+const empty_id_value = -1
+
 struct IndividualBlock {
 	value int
 }
 
-const empty_id_value = -1
+fn (ib IndividualBlock) to_string() string {
+	if ib.value == empty_id_value {
+		return '.'
+	}
+	return ib.value.str()
+}
 
 struct Block {
 	number_of_blocs int
@@ -30,7 +37,17 @@ pub struct DiskMap {
 	blocs []Block
 }
 
-fn (dm DiskMap) to_individual_blocks() []IndividualBlock {
+type IndividualBlocks = []IndividualBlock
+
+pub fn (ibs IndividualBlocks) to_string() string {
+	mut to_string := ''
+	for _, ib in ibs {
+		to_string += ib.to_string()
+	}
+	return to_string
+}
+
+pub fn (dm DiskMap) individual_blocks() IndividualBlocks {
 	mut individual_blocks := []IndividualBlock{}
 	for block in dm.blocs {
 		for i := 0; i < block.number_of_blocs; i++ {

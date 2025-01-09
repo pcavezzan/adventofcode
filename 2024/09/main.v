@@ -1,5 +1,11 @@
 module main
 
+import diskmap
+
 fn main() {
-	println('Hello, World!')
+	disk_map := diskmap.from_str_input('2333133121414131402')!
+
+	blocks := disk_map.individual_blocks()
+
+	println(blocks.to_string())
 }
