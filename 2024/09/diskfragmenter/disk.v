@@ -56,24 +56,24 @@ mut:
 	blocs Blocks
 }
 
-pub fn (dm Disk) to_string() string {
-	return dm.blocs.to_string()
+pub fn (d Disk) to_string() string {
+	return d.blocs.to_string()
 }
 
-pub fn (mut dm Disk) compact() Disk {
-	last_index_file_block, first_index_free_block := dm.find_first_space_and_last_file_blocks()
-	last_file_block := dm.blocs[last_index_file_block]
-	first_free_block := dm.blocs[first_index_free_block]
-	dm.blocs[first_index_free_block] = last_file_block
-	dm.blocs[last_index_file_block] = first_free_block
-	return dm
+pub fn (mut d Disk) compact() Disk {
+	last_index_file_block, first_index_free_block := d.find_first_space_and_last_file_blocks()
+	last_file_block := d.blocs[last_index_file_block]
+	first_free_block := d.blocs[first_index_free_block]
+	d.blocs[first_index_free_block] = last_file_block
+	d.blocs[last_index_file_block] = first_free_block
+	return d
 }
 
-fn (dm Disk) find_first_space_and_last_file_blocks() (int, int) {
+fn (d Disk) find_first_space_and_last_file_blocks() (int, int) {
 	out_of_index := -1
 	mut first_index_free_block := out_of_index
 	mut last_index_file_block := out_of_index
-	for index, block in dm.blocs {
+	for index, block in d.blocs {
 		if block.value == -1 {
 			if first_index_free_block == out_of_index {
 				first_index_free_block = index
@@ -86,8 +86,8 @@ fn (dm Disk) find_first_space_and_last_file_blocks() (int, int) {
 	return last_index_file_block, first_index_free_block
 }
 
-pub fn (dm Disk) needs_compaction() bool {
-	last_index_file_block, first_index_free_block := dm.find_first_space_and_last_file_blocks()
+pub fn (d Disk) needs_compaction() bool {
+	last_index_file_block, first_index_free_block := d.find_first_space_and_last_file_blocks()
 	if first_index_free_block > last_index_file_block {
 		return false
 	}
