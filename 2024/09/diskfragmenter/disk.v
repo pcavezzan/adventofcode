@@ -8,6 +8,10 @@ struct Block {
 	value int
 }
 
+fn (b Block) is_free_space() bool {
+	return b.value == empty_id_value
+}
+
 fn (b Block) is_different_from(other Block) bool {
 	return b.value != other.value
 }
@@ -93,6 +97,17 @@ pub fn (d Disk) needs_compaction() bool {
 	}
 
 	return true
+}
+
+pub fn (d Disk) checksum() int {
+	mut sum := 0
+	for index, block in d.blocs {
+		if block.is_free_space() {
+			break
+		}
+		sum += (block.value * index)
+	}
+	return sum
 }
 
 type Blocks = []Block

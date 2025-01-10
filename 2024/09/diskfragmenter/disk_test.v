@@ -26,6 +26,32 @@ fn test_create_disk_from_input() {
 	}
 }
 
+fn test_disk_as_string() {
+	disk := Disk{
+		blocs: [
+			Block{0},
+			Block{-1},
+			Block{-1},
+			Block{1},
+			Block{1},
+			Block{1},
+			Block{-1},
+			Block{-1},
+			Block{-1},
+			Block{-1},
+			Block{2},
+			Block{2},
+			Block{2},
+			Block{2},
+			Block{2},
+		]
+	}
+
+	result := disk.to_string()
+
+	assert result == '0..111....22222'
+}
+
 fn test_blocks_represented_as_string() {
 	blocks := Blocks([
 		Block{0},
@@ -105,4 +131,19 @@ fn test_should_indicate_when_disk_needs_compaction() {
 		expected_result := test.expected_result
 		assert result == expected_result, '${test.name} - Expected: ${expected_result} Got: ${result} '
 	}
+}
+
+fn test_disk_checksum_should_return_the_sum_of_multiplication_of_each_block_position_by_it_block_id() {
+	disk := Disk{
+		blocs: [
+			Block{0},
+			Block{1},
+			Block{-1},
+			Block{-1},
+		]
+	}
+
+	checksum := disk.checksum()
+
+	assert checksum == 1
 }
