@@ -1,6 +1,6 @@
 module diskfragmenter
 
-fn test_create_diskmap_from_input() {
+fn test_create_disk_from_input() {
 	input := '12345'
 
 	disk_map := from_map(input)!
@@ -39,7 +39,7 @@ fn test_blocks_represented_as_string() {
 	assert result == '0..1'
 }
 
-fn test_should_compact_disk_map_move_blocks_one_at_a_time_from_end_to_the_leftmost_free_space_block() {
+fn test_should_compact_disk_by_moving_blocks_one_at_a_time_from_end_to_the_leftmost_free_space_block() {
 	mut disk_map := from_map('12345')!
 
 	new_disk_map := disk_map.compact()
