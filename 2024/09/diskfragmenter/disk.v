@@ -1,4 +1,4 @@
-module diskmap
+module diskfragmenter
 
 import strconv
 

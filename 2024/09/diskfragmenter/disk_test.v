@@ -1,4 +1,4 @@
-module diskmap
+module diskfragmenter
 
 fn test_create_diskmap_from_input() {
 	input := '12345'

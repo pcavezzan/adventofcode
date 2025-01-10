@@ -1,9 +1,9 @@
 module main
 
-import diskmap
+import diskfragmenter
 
 fn main() {
-	mut disk := diskmap.from_map('2333133121414131402')!
+	mut disk := diskfragmenter.from_map('2333133121414131402')!
 	println(disk.to_string())
 	for {
 		disk.compact()
