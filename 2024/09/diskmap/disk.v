@@ -51,16 +51,16 @@ fn (blocs BlocsDenseFormat) to_individual_blocks() Blocks {
 	return individual_blocks
 }
 
-pub struct DiskMap {
+pub struct Disk {
 mut:
 	blocs Blocks
 }
 
-pub fn (dm DiskMap) to_string() string {
+pub fn (dm Disk) to_string() string {
 	return dm.blocs.to_string()
 }
 
-pub fn (mut dm DiskMap) compact() DiskMap {
+pub fn (mut dm Disk) compact() Disk {
 	last_index_file_block, first_index_free_block := dm.find_first_space_and_last_file_blocks()
 	last_file_block := dm.blocs[last_index_file_block]
 	first_free_block := dm.blocs[first_index_free_block]
@@ -69,7 +69,7 @@ pub fn (mut dm DiskMap) compact() DiskMap {
 	return dm
 }
 
-fn (dm DiskMap) find_first_space_and_last_file_blocks() (int, int) {
+fn (dm Disk) find_first_space_and_last_file_blocks() (int, int) {
 	out_of_index := -1
 	mut first_index_free_block := out_of_index
 	mut last_index_file_block := out_of_index
@@ -86,7 +86,7 @@ fn (dm DiskMap) find_first_space_and_last_file_blocks() (int, int) {
 	return last_index_file_block, first_index_free_block
 }
 
-pub fn (dm DiskMap) needs_compaction() bool {
+pub fn (dm Disk) needs_compaction() bool {
 	last_index_file_block, first_index_free_block := dm.find_first_space_and_last_file_blocks()
 	if first_index_free_block > last_index_file_block {
 		return false
@@ -105,7 +105,7 @@ pub fn (ibs Blocks) to_string() string {
 	return to_string
 }
 
-pub fn from_str_input(input string) !DiskMap {
+pub fn from_map(input string) !Disk {
 	mut next_id := 0
 	block_sequences := input.runes().map(strconv.atoi(it.str())!)
 	mut denses_format := []DenseFormat{}
@@ -117,7 +117,7 @@ pub fn from_str_input(input string) !DiskMap {
 			denses_format << new_free_space_block_format(block)
 		}
 	}
-	return DiskMap{
+	return Disk{
 		blocs: BlocsDenseFormat(denses_format).to_individual_blocks()
 	}
 }
