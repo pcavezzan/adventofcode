@@ -8,6 +8,10 @@ struct Block {
 	value int
 }
 
+fn (b Block) is_different_from(other Block) bool {
+	return b.value != other.value
+}
+
 fn (ib Block) to_string() string {
 	if ib.value == empty_id_value {
 		return '.'
@@ -48,11 +52,47 @@ fn (blocs BlocsDenseFormat) to_individual_blocks() Blocks {
 }
 
 pub struct DiskMap {
+mut:
 	blocs Blocks
 }
 
 pub fn (dm DiskMap) to_string() string {
 	return dm.blocs.to_string()
+}
+
+pub fn (mut dm DiskMap) compact() DiskMap {
+	last_index_file_block, first_index_free_block := dm.find_first_space_and_last_file_blocks()
+	last_file_block := dm.blocs[last_index_file_block]
+	first_free_block := dm.blocs[first_index_free_block]
+	dm.blocs[first_index_free_block] = last_file_block
+	dm.blocs[last_index_file_block] = first_free_block
+	return dm
+}
+
+fn (dm DiskMap) find_first_space_and_last_file_blocks() (int, int) {
+	out_of_index := -1
+	mut first_index_free_block := out_of_index
+	mut last_index_file_block := out_of_index
+	for index, block in dm.blocs {
+		if block.value == -1 {
+			if first_index_free_block == out_of_index {
+				first_index_free_block = index
+			}
+		} else {
+			last_index_file_block = index
+		}
+	}
+
+	return last_index_file_block, first_index_free_block
+}
+
+pub fn (dm DiskMap) needs_compaction() bool {
+	last_index_file_block, first_index_free_block := dm.find_first_space_and_last_file_blocks()
+	if first_index_free_block > last_index_file_block {
+		return false
+	}
+
+	return true
 }
 
 type Blocks = []Block
