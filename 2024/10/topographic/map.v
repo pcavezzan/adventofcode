@@ -26,3 +26,11 @@ pub fn new_map_from_puzzle(puzzle string) &Map {
 		positions: positions
 	}
 }
+
+struct TrailHead {
+	visited []int
+}
+
+fn (m Map) find_hiking_trails() TrailHead {
+	return TrailHead{}
+}

@@ -64,3 +64,72 @@ fn test_new_map_from_puzzle() {
 		]
 	}
 }
+
+fn test_should_find_hiking_trails() {
+	topographic_map := Map{
+		positions: [
+			[
+				Position{
+					height: 0
+				},
+				Position{
+					height: 1
+				},
+				Position{
+					height: 2
+				},
+				Position{
+					height: 3
+				},
+			],
+			[
+				Position{
+					height: 7
+				},
+				Position{
+					height: 6
+				},
+				Position{
+					height: 5
+				},
+				Position{
+					height: 4
+				},
+			],
+			[
+				Position{
+					height: 3
+				},
+				Position{
+					height: 5
+				},
+				Position{
+					height: 4
+				},
+				Position{
+					height: 5
+				},
+			],
+			[
+				Position{
+					height: 9
+				},
+				Position{
+					height: 8
+				},
+				Position{
+					height: 7
+				},
+				Position{
+					height: 6
+				},
+			],
+		]
+	}
+	// assert visitor.trails ==
+	hiking_trails := topographic_map.find_hiking_trails()
+
+	assert hiking_trails == TrailHead{
+		visited: [0, 1, 2, 3, 7, 11, 15, 14, 13, 12]
+	}
+}
