@@ -5,12 +5,17 @@ struct Safe {
 }
 
 impl Safe {
+
     pub fn new() -> Self {
+        Self::with_arrow(0)
+    }
+
+    pub fn with_arrow(arrow: i8) -> Self {
         let mut default = vec![];
         for i in 0..100 {
             default.push(i);
         }
-        Self { n: default, arrow: 0 }
+        Self { n: default, arrow: arrow }
     }
 
     pub fn turn(&mut self) {
@@ -35,6 +40,17 @@ mod tests {
         assert_eq!(99, d.n[99]);
         // check arrow value
         assert_eq!(0, d.arrow);
+    }
+
+    #[test]
+    fn should_create_safe_with_initial_arrow_value() {
+        let d = Safe::with_arrow(11);
+
+        // check dial values
+        assert_eq!(0, d.n[0] );
+        assert_eq!(99, d.n[99]);
+        // check arrow value
+        assert_eq!(11, d.arrow);
     }
 
     #[test]
