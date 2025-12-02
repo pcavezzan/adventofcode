@@ -30,10 +30,10 @@ mod tests {
 
     #[test]
     fn should_parse_document_from_string() {
-        let d = Document::parse("L\nR");
+        let d = Document::parse("L11\nR8");
 
         assert_eq!(2, d.seq_rotations.len());
-        assert_eq!(Rotation::Left, d.seq_rotations[0]);
-        assert_eq!(Rotation::Right, d.seq_rotations[1]);
+        assert_eq!(Rotation::Left{ d: 11 }, d.seq_rotations[0]);
+        assert_eq!(Rotation::Right{ d: 8 }, d.seq_rotations[1]);
     }
 }
