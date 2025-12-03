@@ -1,3 +1,4 @@
+use crate::rotation::Rotation;
 
 struct Safe {
     n: Vec<i8>,
@@ -15,15 +16,18 @@ impl Safe {
         for i in 0..100 {
             default.push(i);
         }
-        Self { n: default, arrow: arrow }
+        Self { n: default, arrow }
     }
 
-    pub fn turn(&mut self) {
-        self.click()
-    }
-
-    fn click(&mut self) {
-        self.arrow = self.arrow + 1;
+    pub fn turn(&mut self, rotation: Rotation) {
+        match rotation {
+            Rotation::Left { d } => {
+                self.arrow = 100 + ((self.arrow - d) % 100);
+            }
+            Rotation::Right { d } => {
+                self.arrow = (self.arrow + d) % 100;
+            }
+        }
     }
 }
 
@@ -54,20 +58,30 @@ mod tests {
     }
 
     #[test]
-    fn should_increment_arrow_value() {
+    fn should_turn_dial_by_one_step_on_turn_right() {
         let mut d = Safe::new();
 
-        d.click();
+        d.turn(Rotation::Right { d: 1 });
 
         assert_eq!(1, d.arrow);
     }
 
     #[test]
-    fn should_turn_dial_by_one_step_on_turn() {
+    fn should_turn_dial_by_two_steps_on_turn_left_from_zero() {
         let mut d = Safe::new();
 
-        d.turn();
+        d.turn(Rotation::Left { d: 1 });
 
-        assert_eq!(1, d.arrow);
+        assert_eq!(99, d.arrow);
+    }
+
+
+    #[test]
+    fn should_turn_dial_by_one_steps_on_turn_right_from_ninety_nine() {
+        let mut d = Safe::with_arrow(99);
+
+        d.turn(Rotation::Right { d: 1 });
+
+        assert_eq!(0, d.arrow);
     }
 }
