@@ -57,4 +57,15 @@ mod tests {
 
         assert_eq!(0, arrow);
     }
+
+
+    #[test]
+    fn should_turn_left_then_right_from_dial_starts_at_five() {
+        let d = Document::parse("L10\nR5");
+        let mut safe = Safe::with_arrow(5);
+
+        let arrow = d.apply_on(&mut safe);
+
+        assert_eq!(0, arrow);
+    }
 }
