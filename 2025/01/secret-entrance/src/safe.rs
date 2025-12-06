@@ -1,6 +1,6 @@
-use crate::rotation::Rotation;
+use crate::rotation::{Rotation, Spatial};
 
-struct Safe {
+pub struct Safe {
     n: Vec<i8>,
     arrow: i8
 }
@@ -19,15 +19,23 @@ impl Safe {
         Self { n: default, arrow }
     }
 
-    pub fn turn(&mut self, rotation: Rotation) {
-        match rotation {
-            Rotation::Left { d } => {
-                self.arrow = 100 + ((self.arrow - d) % 100);
-            }
-            Rotation::Right { d } => {
-                self.arrow = (self.arrow + d) % 100;
-            }
+    pub fn turn(&mut self, rotation: Rotation) -> i8 {
+        let grid_size = 100;
+        let max_pos = grid_size - 1;
+        let min_pos = 0;
+        let mut distance = rotation.distance();
+        let ratio_how_far = distance / max_pos;
+        distance = distance - (ratio_how_far * grid_size);
+        self.arrow = self.arrow + distance;
+        if self.arrow < min_pos {
+            self.arrow = grid_size + (self.arrow - min_pos);
         }
+
+        if self.arrow > max_pos {
+            self.arrow = min_pos + (self.arrow - grid_size);
+        }
+
+        self.arrow
     }
 }
 
