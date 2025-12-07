@@ -2,13 +2,14 @@ use crate::rotation::{Rotation, Spatial};
 
 pub struct Safe {
     arrow: i8,
-    password: Option<i16>
+    password: Option<i16>,
+    over_passed_zero_count: Option<i16>
 }
 
 impl Safe {
 
     pub fn with_arrow(arrow: i8) -> Self {
-        Self { arrow, password: None }
+        Self { arrow, password: None, over_passed_zero_count: None }
     }
 
     pub fn turn(&mut self, rotation: Rotation) -> i8 {
@@ -20,16 +21,21 @@ impl Safe {
         distance = distance - (ratio_how_far * grid_size);
         let mut nex_post: i16 = self.arrow as i16;
         nex_post = nex_post + distance;
+        let mut over_passed_zero_count = false;
         if nex_post < min_pos {
             nex_post = grid_size + (nex_post - min_pos);
+            over_passed_zero_count = self.arrow > 0;
         }
 
         if nex_post > max_pos {
             nex_post = min_pos + (nex_post - grid_size);
+            over_passed_zero_count = self.arrow > 0;
         }
 
         if nex_post == 0 {
             self.password = Some(self.password.unwrap_or(0) + 1);
+        } else if over_passed_zero_count {
+            self.over_passed_zero_count = Some(self.over_passed_zero_count.unwrap_or(0) + 1);
         }
 
         self.arrow = nex_post as i8;
@@ -38,6 +44,10 @@ impl Safe {
 
     pub fn password(&self) -> Option<i16> {
         self.password
+    }
+
+    pub fn new_security_protocole_password(&self) -> Option<i16> {
+        self.password.map(|p| p + self.over_passed_zero_count.unwrap_or(0))
     }
 }
 
