@@ -1,7 +1,7 @@
 use crate::rotation::Rotation;
 use crate::safe::Safe;
 
-struct Document {
+pub struct Document {
     seq_rotations: Vec<Rotation>,
 }
 
@@ -38,7 +38,7 @@ impl Document {
         arrow
     }
 
-    pub fn find_password(&self, safe: &mut Safe) -> Option<i8> {
+    pub fn find_password(&self, safe: &mut Safe) -> Option<i16> {
         self.apply_on(safe);
         safe.password()
     }

@@ -1,23 +1,14 @@
 use crate::rotation::{Rotation, Spatial};
 
 pub struct Safe {
-    n: Vec<i8>,
     arrow: i8,
-    password: Option<i8>
+    password: Option<i16>
 }
 
 impl Safe {
 
-    pub fn new() -> Self {
-        Self::with_arrow(0)
-    }
-
     pub fn with_arrow(arrow: i8) -> Self {
-        let mut default = vec![100; 0];
-        for i in 0..100 {
-            default.push(i);
-        }
-        Self { n: default, arrow, password: None }
+        Self { arrow, password: None }
     }
 
     pub fn turn(&mut self, rotation: Rotation) -> i8 {
@@ -45,7 +36,7 @@ impl Safe {
         self.arrow
     }
 
-    pub fn password(&self) -> Option<i8> {
+    pub fn password(&self) -> Option<i16> {
         self.password
     }
 }
@@ -56,29 +47,23 @@ mod tests {
 
     #[test]
     fn should_create_safe_with_default_values() {
-        let d = Safe::new();
+        let d = Safe::with_arrow(0);
 
         // check dial values
-        assert_eq!(0, d.n[0] );
-        assert_eq!(99, d.n[99]);
-        // check arrow value
         assert_eq!(0, d.arrow);
+        assert_eq!(None, d.password);
     }
 
     #[test]
     fn should_create_safe_with_initial_arrow_value() {
         let d = Safe::with_arrow(11);
 
-        // check dial values
-        assert_eq!(0, d.n[0] );
-        assert_eq!(99, d.n[99]);
-        // check arrow value
         assert_eq!(11, d.arrow);
     }
 
     #[test]
     fn should_turn_dial_by_one_step_on_turn_right() {
-        let mut d = Safe::new();
+        let mut d = Safe::with_arrow(0);
 
         d.turn(Rotation::Right { d: 1 });
 
@@ -87,7 +72,7 @@ mod tests {
 
     #[test]
     fn should_turn_dial_by_two_steps_on_turn_left_from_zero() {
-        let mut d = Safe::new();
+        let mut d = Safe::with_arrow(0);
 
         d.turn(Rotation::Left { d: 1 });
 
