@@ -117,18 +117,25 @@ mod tests {
 
     #[test]
     fn should_find_safe_password_using_new_security_protocol_with_arrow_at_zero() {
-        let d = Document::parse("R1000");
+        let mut d = Document::parse("R1000");
         let mut safe = Safe::with_arrow(50);
 
-        let security_password = d.find_new_security_protocol_password(&mut safe);
+        let mut security_password = d.find_new_security_protocol_password(&mut safe);
 
         assert_eq!(Some(10), security_password);
 
-        let d = Document::parse("R100");
-        safe = Safe::with_arrow(50);
+        d = Document::parse("R100");
+        safe = Safe::with_arrow(0);
 
-        let security_password = d.find_new_security_protocol_password(&mut safe);
+        security_password = d.find_new_security_protocol_password(&mut safe);
 
         assert_eq!(Some(1), security_password);
+
+        d = Document::parse("R1000");
+        safe = Safe::with_arrow(0);
+
+        security_password = d.find_new_security_protocol_password(&mut safe);
+
+        assert_eq!(Some(10), security_password);
     }
 }
