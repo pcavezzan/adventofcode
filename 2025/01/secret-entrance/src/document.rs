@@ -45,7 +45,7 @@ impl Document {
 
     pub fn find_new_security_protocol_password(&self, safe: &mut Safe) -> Option<i16> {
         self.apply_on(safe);
-        safe.new_security_protocole_password()
+        safe.new_security_protocol_password()
     }
 }
 
@@ -113,5 +113,22 @@ mod tests {
         let password = d.find_new_security_protocol_password(&mut safe);
 
         assert_eq!(Some(6), password);
+    }
+
+    #[test]
+    fn should_find_safe_password_using_new_security_protocol_with_arrow_at_zero() {
+        let d = Document::parse("R1000");
+        let mut safe = Safe::with_arrow(50);
+
+        let security_password = d.find_new_security_protocol_password(&mut safe);
+
+        assert_eq!(Some(10), security_password);
+
+        let d = Document::parse("R100");
+        safe = Safe::with_arrow(50);
+
+        let security_password = d.find_new_security_protocol_password(&mut safe);
+
+        assert_eq!(Some(1), security_password);
     }
 }

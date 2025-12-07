@@ -13,29 +13,37 @@ impl Safe {
     }
 
     pub fn turn(&mut self, rotation: Rotation) -> i8 {
-        let grid_size = 100;
+        let grid_size: i16 = 100;
         let max_pos = grid_size - 1;
         let min_pos = 0;
         let mut distance = rotation.distance();
-        let ratio_how_far = distance / max_pos;
+        let ratio_how_far = i16::abs(distance / grid_size);
         distance = distance - (ratio_how_far * grid_size);
         let mut nex_post: i16 = self.arrow as i16;
         nex_post = nex_post + distance;
-        let mut over_passed_zero_count = false;
+        let mut over_passed_zero_count = ratio_how_far >= 1;
+        let mut number_of_times_over_passed_zero = ratio_how_far;
         if nex_post < min_pos {
             nex_post = grid_size + (nex_post - min_pos);
             over_passed_zero_count = self.arrow > 0;
+            if number_of_times_over_passed_zero == 0 {
+                number_of_times_over_passed_zero = 1;
+            }
         }
 
         if nex_post > max_pos {
             nex_post = min_pos + (nex_post - grid_size);
             over_passed_zero_count = self.arrow > 0;
+            if number_of_times_over_passed_zero == 0 {
+                number_of_times_over_passed_zero = 1;
+            }
         }
 
         if nex_post == 0 {
             self.password = Some(self.password.unwrap_or(0) + 1);
+            self.over_passed_zero_count = Some(self.over_passed_zero_count.unwrap_or(0) + ratio_how_far);
         } else if over_passed_zero_count {
-            self.over_passed_zero_count = Some(self.over_passed_zero_count.unwrap_or(0) + 1);
+            self.over_passed_zero_count = Some(self.over_passed_zero_count.unwrap_or(0) + number_of_times_over_passed_zero);
         }
 
         self.arrow = nex_post as i8;
@@ -46,8 +54,10 @@ impl Safe {
         self.password
     }
 
-    pub fn new_security_protocole_password(&self) -> Option<i16> {
-        self.password.map(|p| p + self.over_passed_zero_count.unwrap_or(0))
+    pub fn new_security_protocol_password(&self) -> Option<i16> {
+        let password = self.password.unwrap_or(0);
+        let over_passed_zero_count = self.over_passed_zero_count.unwrap_or(0);
+        Some(password + over_passed_zero_count)
     }
 }
 
