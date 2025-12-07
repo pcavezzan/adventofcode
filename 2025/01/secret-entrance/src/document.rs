@@ -2,8 +2,9 @@ use crate::rotation::Rotation;
 use crate::safe::Safe;
 
 struct Document {
-    seq_rotations: Vec<Rotation>
+    seq_rotations: Vec<Rotation>,
 }
+
 
 impl Document {
     pub fn new(seq_rotations: Vec<Rotation>) -> Self {
@@ -29,6 +30,11 @@ impl Document {
             arrow = safe.turn(rotation);
         }
         arrow
+    }
+
+    pub fn find_password(&self, safe: &mut Safe) -> Option<i8> {
+        self.apply_on(safe);
+        safe.password()
     }
 }
 
@@ -67,5 +73,15 @@ mod tests {
         let arrow = d.apply_on(&mut safe);
 
         assert_eq!(0, arrow);
+    }
+
+    #[test]
+    fn should_find_safe_password() {
+        let d = Document::parse("L68\nL30\nR48\nL5\nR60\nL55\nL1\nL99\nR14\nL82");
+        let mut safe = Safe::with_arrow(50);
+
+        let password = d.find_password(&mut safe);
+
+        assert_eq!(Some(3), password);
     }
 }

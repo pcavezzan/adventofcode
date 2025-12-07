@@ -2,7 +2,8 @@ use crate::rotation::{Rotation, Spatial};
 
 pub struct Safe {
     n: Vec<i8>,
-    arrow: i8
+    arrow: i8,
+    password: Option<i8>
 }
 
 impl Safe {
@@ -12,11 +13,11 @@ impl Safe {
     }
 
     pub fn with_arrow(arrow: i8) -> Self {
-        let mut default = vec![];
+        let mut default = vec![100; 0];
         for i in 0..100 {
             default.push(i);
         }
-        Self { n: default, arrow }
+        Self { n: default, arrow, password: None }
     }
 
     pub fn turn(&mut self, rotation: Rotation) -> i8 {
@@ -26,16 +27,26 @@ impl Safe {
         let mut distance = rotation.distance();
         let ratio_how_far = distance / max_pos;
         distance = distance - (ratio_how_far * grid_size);
-        self.arrow = self.arrow + distance;
-        if self.arrow < min_pos {
-            self.arrow = grid_size + (self.arrow - min_pos);
+        let mut nex_post: i16 = self.arrow as i16;
+        nex_post = nex_post + distance;
+        if nex_post < min_pos {
+            nex_post = grid_size + (nex_post - min_pos);
         }
 
-        if self.arrow > max_pos {
-            self.arrow = min_pos + (self.arrow - grid_size);
+        if nex_post > max_pos {
+            nex_post = min_pos + (nex_post - grid_size);
         }
 
+        if nex_post == 0 {
+            self.password = Some(self.password.unwrap_or(0) + 1);
+        }
+
+        self.arrow = nex_post as i8;
         self.arrow
+    }
+
+    pub fn password(&self) -> Option<i8> {
+        self.password
     }
 }
 
