@@ -23,6 +23,12 @@ impl Document {
         Self::new(seq_rotations)
     }
 
+    pub fn from_file(file_path: &str) -> Self {
+        let contents = std::fs::read_to_string(file_path)
+            .expect(format!("Something went wrong reading the file {file_path}").as_str());
+        Self::parse(&contents)
+    }
+
     pub fn apply_on(&self, safe: &mut Safe) -> i8 {
         let mut arrow = 0;
         for r in &self.seq_rotations {
@@ -52,6 +58,15 @@ mod tests {
         assert_eq!(2, d.seq_rotations.len());
         assert_eq!(Rotation::Left{ d: 11 }, d.seq_rotations[0]);
         assert_eq!(Rotation::Right{ d: 8 }, d.seq_rotations[1]);
+    }
+
+    #[test]
+    fn should_read_document_from_file() {
+        let d = Document::from_file("test_input.txt");
+
+        assert_eq!(2, d.seq_rotations.len());
+        assert_eq!(Rotation::Left { d: 11 }, d.seq_rotations[0]);
+        assert_eq!(Rotation::Right { d: 8 }, d.seq_rotations[1]);
     }
 
     #[test]
