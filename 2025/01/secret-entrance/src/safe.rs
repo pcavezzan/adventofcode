@@ -21,7 +21,7 @@ impl Safe {
         distance = distance - (ratio_how_far * grid_size);
         let mut nex_post: i16 = self.arrow as i16;
         nex_post = nex_post + distance;
-        let mut over_passed_zero_count = ratio_how_far >= 1;
+        let mut over_passed_zero_count = nex_post != 0 && ratio_how_far >= 1;
         let mut number_of_times_over_passed_zero = ratio_how_far;
         if nex_post != 0 {
             if nex_post < min_pos {
@@ -41,7 +41,11 @@ impl Safe {
 
         if nex_post == 0 {
             self.password = Some(self.password.unwrap_or(0) + 1);
-        } else if over_passed_zero_count {
+            self.over_passed_zero_count = Some(self.over_passed_zero_count.unwrap_or(0) + number_of_times_over_passed_zero);
+            over_passed_zero_count = false;
+        }
+
+        if over_passed_zero_count {
             self.over_passed_zero_count = Some(self.over_passed_zero_count.unwrap_or(0) + number_of_times_over_passed_zero);
         }
 
@@ -54,9 +58,7 @@ impl Safe {
     }
 
     pub fn new_security_protocol_password(&self) -> Option<i16> {
-        let password = self.password.unwrap_or(0);
-        let over_passed_zero_count = self.over_passed_zero_count.unwrap_or(0);
-        Some(password + over_passed_zero_count)
+        self.over_passed_zero_count
     }
 }
 
